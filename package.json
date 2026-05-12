@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "engines": {
-    "node": "22.x"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "build": "npm run build --workspace=@veritas-layer/landing",
