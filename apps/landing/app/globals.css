@@ -1,0 +1,97 @@
+@import 'tailwindcss';
+
+:root {
+  --font-sans: 'Inter', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', 'Consolas', monospace;
+  --color-background: #060816;
+  --color-surface: #0f172a;
+  --color-border: #1e293b;
+  --color-primary: #4f46e5;
+  --color-accent: #22c55e;
+  --color-secondary-accent: #06b6d4;
+  --color-heading: #f8fafc;
+  --color-body: #cbd5e1;
+  --color-muted: #64748b;
+  --shadow-panel: 0 24px 80px rgba(2, 6, 23, 0.38);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top, rgba(79, 70, 229, 0.12), transparent 28rem),
+    linear-gradient(180deg, #060816 0%, #08101d 100%);
+  color: var(--color-body);
+  font-family: var(--font-sans), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(10, 15, 27, 0.94));
+  box-shadow: var(--shadow-panel);
+  border-radius: 1.75rem;
+  backdrop-filter: blur(18px);
+}
+
+.button-primary,
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-radius: 999px;
+  padding: 0.9rem 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.button-primary {
+  border: 1px solid rgba(79, 70, 229, 0.45);
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.96), rgba(37, 99, 235, 0.92));
+  color: var(--color-heading);
+}
+
+.button-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-heading);
+}
+
+.button-primary:hover,
+.button-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.section-kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-secondary-accent);
+}
+
+.section-heading {
+  max-width: 48rem;
+  color: var(--color-heading);
+  font-size: clamp(2rem, 3vw, 3.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+}

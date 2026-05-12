@@ -1,0 +1,29 @@
+{
+  "name": "veritas-layer",
+  "private": true,
+  "packageManager": "pnpm@10.11.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=@veritas-layer/landing",
+    "build:repo": "turbo run build",
+    "dev": "npm run dev --workspace=@veritas-layer/landing",
+    "dev:repo": "turbo run dev --filter=@veritas-layer/landing",
+    "lint": "npm run lint --workspace=@veritas-layer/landing",
+    "lint:repo": "turbo run lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --workspace=@veritas-layer/landing",
+    "typecheck:repo": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "eslint": "^9.27.0",
+    "eslint-config-next": "^15.3.2",
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.3",
+    "typescript": "^5.8.3"
+  }
+}
