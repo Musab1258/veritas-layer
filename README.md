@@ -51,13 +51,6 @@ npm install
 npm run dev
 ```
 
-For pnpm-based workflows later:
-
-```bash
-pnpm install
-pnpm dev
-```
-
 ## Product pillars
 
 - zk identity and compliance verification

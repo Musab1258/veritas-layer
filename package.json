@@ -1,11 +1,13 @@
 {
   "name": "veritas-layer",
   "private": true,
-  "packageManager": "pnpm@10.11.0",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "build": "npm run build --workspace=@veritas-layer/landing",
     "build:repo": "turbo run build",
