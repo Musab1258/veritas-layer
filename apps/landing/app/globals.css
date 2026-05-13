@@ -40,7 +40,11 @@ a {
 
 .panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(10, 15, 27, 0.94));
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.88),
+    rgba(10, 15, 27, 0.94)
+  );
   box-shadow: var(--shadow-panel);
   border-radius: 1.75rem;
   backdrop-filter: blur(18px);
@@ -64,7 +68,11 @@ a {
 
 .button-primary {
   border: 1px solid rgba(79, 70, 229, 0.45);
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.96), rgba(37, 99, 235, 0.92));
+  background: linear-gradient(
+    135deg,
+    rgba(79, 70, 229, 0.96),
+    rgba(37, 99, 235, 0.92)
+  );
   color: var(--color-heading);
 }
 

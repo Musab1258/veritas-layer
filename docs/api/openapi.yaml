@@ -1,0 +1,217 @@
+openapi: 3.1.0
+info:
+  title: Veritas Layer API
+  version: 0.1.0
+  description: >
+    Phase 2 architectural API specification for Veritas Layer. These endpoints
+    define the intended integrator surface for the Phase 3 MVP and later
+    subsystems.
+servers:
+  - url: https://api.veritaslayer.xyz/v1
+    description: Planned production base URL
+tags:
+  - name: Identity
+  - name: Compliance
+  - name: Assets
+  - name: Settlement
+paths:
+  /identity/verify:
+    post:
+      tags: [Identity]
+      summary: Start or confirm an identity verification flow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [wallet, provider]
+              properties:
+                wallet:
+                  type: string
+                provider:
+                  type: string
+      responses:
+        '202':
+          description: Verification accepted for processing
+  /identity/proof:
+    post:
+      tags: [Identity]
+      summary: Submit or request a proof package for an action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [wallet, action]
+              properties:
+                wallet:
+                  type: string
+                action:
+                  type: string
+                assetId:
+                  type: string
+      responses:
+        '200':
+          description: Proof accepted or generated
+  /identity/revoke:
+    post:
+      tags: [Identity]
+      summary: Revoke an attestation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [credentialId]
+              properties:
+                credentialId:
+                  type: string
+      responses:
+        '202':
+          description: Revocation accepted
+  /compliance/validate-transfer:
+    post:
+      tags: [Compliance]
+      summary: Preflight a transfer against active policy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assetId, fromWallet, toWallet]
+              properties:
+                assetId:
+                  type: string
+                fromWallet:
+                  type: string
+                toWallet:
+                  type: string
+                proofId:
+                  type: string
+      responses:
+        '200':
+          description: Policy decision returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplianceDecision'
+  /compliance/policies:
+    get:
+      tags: [Compliance]
+      summary: List active compliance policies
+      responses:
+        '200':
+          description: Policy list
+  /assets/create:
+    post:
+      tags: [Assets]
+      summary: Register a regulated asset definition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, symbol, policyId]
+              properties:
+                name:
+                  type: string
+                symbol:
+                  type: string
+                policyId:
+                  type: string
+      responses:
+        '201':
+          description: Asset registered
+  /assets/{id}:
+    get:
+      tags: [Assets]
+      summary: Fetch asset metadata
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset detail
+  /assets/{id}/mint:
+    post:
+      tags: [Assets]
+      summary: Request issuer-authorized minting
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, recipient]
+              properties:
+                amount:
+                  type: string
+                recipient:
+                  type: string
+      responses:
+        '202':
+          description: Mint request accepted
+  /settlement/execute:
+    post:
+      tags: [Settlement]
+      summary: Submit a settlement request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assetId, fromWallet, toWallet]
+              properties:
+                assetId:
+                  type: string
+                fromWallet:
+                  type: string
+                toWallet:
+                  type: string
+                amount:
+                  type: string
+      responses:
+        '202':
+          description: Settlement request accepted
+  /settlement/{id}:
+    get:
+      tags: [Settlement]
+      summary: Read settlement status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Settlement detail
+components:
+  schemas:
+    ComplianceDecision:
+      type: object
+      required: [allowed, reasonCode]
+      properties:
+        allowed:
+          type: boolean
+        reasonCode:
+          type: string
+        policyId:
+          type: string
+        settlementReady:
+          type: boolean

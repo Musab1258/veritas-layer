@@ -100,8 +100,8 @@ export function LandingPage() {
               Veritas Layer
             </p>
             <p className="mt-2 max-w-xl text-sm text-[var(--color-muted)]">
-              Private, compliant infrastructure for tokenized real-world assets on
-              Stellar.
+              Private, compliant infrastructure for tokenized real-world assets
+              on Stellar.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 text-sm">
@@ -123,16 +123,17 @@ export function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.28em] text-[var(--color-accent)]">
               <BadgeCheck className="h-3.5 w-3.5" />
-              Phase 1 foundation deployed
+              Phase 2 documentation published
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-[var(--color-heading)] sm:text-6xl lg:text-7xl">
               Privacy-preserving infrastructure for compliant asset issuance and
               settlement.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--color-body)] sm:text-lg">
-              Veritas Layer gives institutions and developers a modular operating
-              system for zk compliance, programmable transfer controls,
-              confidential ownership primitives, and Soroban-native execution.
+              Veritas Layer gives institutions and developers a modular
+              operating system for zk compliance, programmable transfer
+              controls, confidential ownership primitives, and Soroban-native
+              execution.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -184,8 +185,8 @@ export function LandingPage() {
                 </p>
                 <p className="mt-3 text-sm leading-7 text-[var(--color-body)]">
                   Most RWA systems force a compromise between compliance,
-                  transparency, and investor privacy. Veritas Layer is designed to
-                  eliminate that compromise with modular proof systems and
+                  transparency, and investor privacy. Veritas Layer is designed
+                  to eliminate that compromise with modular proof systems and
                   programmable controls.
                 </p>
               </div>
@@ -270,8 +271,8 @@ export function LandingPage() {
             </div>
             <p className="max-w-xl text-sm leading-7 text-[var(--color-muted)]">
               The research direction is explicit: use Stellar as the settlement
-              foundation, keep heavy proving off-chain, and enforce deterministic
-              compliance outcomes on-chain.
+              foundation, keep heavy proving off-chain, and enforce
+              deterministic compliance outcomes on-chain.
             </p>
           </div>
 
@@ -316,7 +317,10 @@ export function LandingPage() {
                 Monorepo surface
               </p>
               <div className="mt-5 space-y-3 font-mono text-sm leading-7 text-[var(--color-body)]">
-                <RepoLine path="apps/landing" summary="public project entry point" />
+                <RepoLine
+                  path="apps/landing"
+                  summary="public project entry point"
+                />
                 <RepoLine
                   path="contracts/compliance-engine"
                   summary="policy execution and transfer validation"
@@ -409,9 +413,9 @@ export function LandingPage() {
               The landing page is the entry point, not the product boundary.
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--color-muted)]">
-              The roadmap is staged around credibility first, then documentation,
-              then a working zk compliance subsystem with contributor-ready
-              surfaces around it.
+              The roadmap is staged around credibility first, then
+              documentation, then a working zk compliance subsystem with
+              contributor-ready surfaces around it.
             </p>
           </div>
 
@@ -451,17 +455,23 @@ export function LandingPage() {
                 Ready for contributors, partners, and ecosystem reviewers.
               </h2>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-[var(--color-body)]">
-                This foundation includes a production-oriented monorepo shape,
-                design tokens, branding documentation, and a landing page that
-                explains the protocol direction with the right institutional tone.
+                The project now includes contributor-ready architecture docs, a
+                threat model, API definitions, and the Phase 1 foundation needed
+                to carry the zk compliance MVP into implementation.
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
-              <Link className="button-primary" href="mailto:team@veritaslayer.xyz">
+              <Link
+                className="button-primary"
+                href="mailto:team@veritaslayer.xyz"
+              >
                 Contact the team
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link className="button-secondary" href="mailto:security@veritaslayer.xyz">
+              <Link
+                className="button-secondary"
+                href="mailto:security@veritaslayer.xyz"
+              >
                 Security contact
               </Link>
             </div>
@@ -470,7 +480,10 @@ export function LandingPage() {
 
         <footer className="mt-16 border-t border-white/8 pt-6 text-sm text-[var(--color-muted)]">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <p>Veritas Layer is designed as compliance and privacy middleware for institutional tokenization on Stellar.</p>
+            <p>
+              Veritas Layer is designed as compliance and privacy middleware for
+              institutional tokenization on Stellar.
+            </p>
             <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.18em]">
               <span>Next.js 15</span>
               <span className="text-white/20">/</span>
@@ -499,8 +512,12 @@ function ArchitectureCard({
       <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/6 text-[var(--color-accent)]">
         <Icon className="h-4.5 w-4.5" />
       </div>
-      <p className="mt-4 text-base font-medium text-[var(--color-heading)]">{title}</p>
-      <p className="mt-2 text-sm leading-7 text-[var(--color-body)]">{description}</p>
+      <p className="mt-4 text-base font-medium text-[var(--color-heading)]">
+        {title}
+      </p>
+      <p className="mt-2 text-sm leading-7 text-[var(--color-body)]">
+        {description}
+      </p>
     </div>
   );
 }
@@ -546,8 +563,12 @@ function SecurityItem({
       <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/6 text-[var(--color-accent)]">
         <Icon className="h-4.5 w-4.5" />
       </div>
-      <p className="mt-4 text-base font-medium text-[var(--color-heading)]">{title}</p>
-      <p className="mt-2 text-sm leading-7 text-[var(--color-body)]">{description}</p>
+      <p className="mt-4 text-base font-medium text-[var(--color-heading)]">
+        {title}
+      </p>
+      <p className="mt-2 text-sm leading-7 text-[var(--color-body)]">
+        {description}
+      </p>
     </div>
   );
 }
