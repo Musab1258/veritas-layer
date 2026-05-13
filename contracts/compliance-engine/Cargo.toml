@@ -1,0 +1,13 @@
+[package]
+name = "veritas-compliance-engine"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "veritas_compliance_engine"
+path = "src/lib.rs"
+
+[dependencies]
+veritas-contract-shared = { path = "../shared" }
+veritas-identity-registry = { path = "../identity-registry" }
+veritas-transfer-policy = { path = "../transfer-policy" }

@@ -10,31 +10,34 @@ Veritas Layer aims to become the compliance and privacy infrastructure layer for
 
 ## Current status
 
-This repository is now in Phase 2: documentation and architecture.
+This repository is now in Phase 3: core MVP implementation.
 
 Implemented today:
 
 - `apps/landing` Next.js 15 landing page
+- `apps/landing/mvp` interactive zk compliance prototype
 - monorepo workspace, TypeScript, ESLint, and Turborepo foundation
 - brand guidance and shared design tokens
 - Phase 2 contributor, security, API, architecture, and roadmap documentation
-- placeholder directories for contracts, services, and future packages
+- shared types and SDK helpers for the MVP flow
+- TypeScript service modules for identity, proof generation, relay, audit logging, and indexing
+- Rust contract-core workspace for identity, policy, compliance, and asset transfer logic
 
-Not implemented yet:
+Still not implemented:
 
-- Soroban contracts
-- zk proving services
-- indexer, API gateway, and issuer dashboard
-- end-to-end compliance validation flows
+- deployed Soroban contracts and on-chain integration
+- real zk circuits and proving backends
+- production wallet integrations and persistence
+- PostgreSQL-backed indexing and observability infrastructure
 
 ## Core modules
 
 | Module                       | Purpose                                                     | Status                    |
 | ---------------------------- | ----------------------------------------------------------- | ------------------------- |
-| zk Identity Layer            | Private KYC, accreditation, and jurisdiction verification   | Architecture defined      |
-| Compliance Engine            | Deterministic transfer validation and policy enforcement    | Architecture defined      |
-| Asset Issuance Engine        | Asset lifecycle orchestration for regulated issuers         | Architecture defined      |
-| Settlement Engine            | Compliance-aware settlement workflows on Stellar rails      | Architecture defined      |
+| zk Identity Layer            | Private KYC, accreditation, and jurisdiction verification   | MVP prototype implemented |
+| Compliance Engine            | Deterministic transfer validation and policy enforcement    | MVP prototype implemented |
+| Asset Issuance Engine        | Asset lifecycle orchestration for regulated issuers         | MVP prototype implemented |
+| Settlement Engine            | Compliance-aware settlement workflows on Stellar rails      | MVP prototype implemented |
 | Confidential Ownership Layer | Selective-disclosure ownership primitives and audit support | Research and architecture |
 
 ## Architecture summary
@@ -60,22 +63,26 @@ See the architecture docs for the target system design:
 ```text
 apps/
   landing/
+  mvp/                     # Phase 3 demo route inside landing app
   issuer-dashboard/        # planned
   investor-portal/         # planned
 contracts/
-  asset-engine/            # planned
-  compliance-engine/       # planned
-  settlement-engine/       # planned
-  shared/                  # planned
+  asset-engine/
+  compliance-engine/
+  identity-registry/
+  transfer-policy/
+  shared/
 services/
-  zk-engine/               # planned
-  identity-service/        # planned
-  indexer/                 # planned
-  api-gateway/             # planned
+  zk-engine/
+  identity-service/
+  proof-relay/
+  audit-logger/
+  indexer/
+  api-gateway/
 packages/
-  sdk/                     # planned
+  sdk/
   ui/                      # planned
-  shared-types/            # planned
+  shared-types/
   config/                  # planned
   design-tokens/
 docs/
@@ -103,7 +110,12 @@ Useful commands:
 npm run lint
 npm run typecheck
 npm run build
+npm run contracts:test
 ```
+
+Primary demo route:
+
+- `/mvp` for the full Phase 3 walkthrough
 
 ## Documentation map
 
@@ -128,9 +140,9 @@ Repo policies:
 | ----------------- | -------------------------------------------------------------- |
 | Landing app       | Next.js 15, React 19, Tailwind CSS 4, Framer Motion            |
 | Workspace tooling | npm workspaces, Turborepo, TypeScript, ESLint, Prettier        |
-| Smart contracts   | Rust, Soroban                                                  |
-| zk systems        | Off-chain prover architecture with verifier abstraction        |
-| Services          | TypeScript and Rust services for identity, indexing, and APIs  |
+| Smart contracts   | Rust contract-core workspace aligned to a Soroban upgrade path |
+| zk systems        | Off-chain proof simulation with typed verifier inputs          |
+| Services          | TypeScript services for identity, indexing, relay, and APIs    |
 | Data plane        | PostgreSQL, queues, caching, and observability in later phases |
 
 ## Roadmap snapshot

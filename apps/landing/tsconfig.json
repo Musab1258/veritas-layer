@@ -3,7 +3,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@veritas-layer/shared-types": [
+        "../../packages/shared-types/src/index.ts"
+      ],
+      "@veritas-layer/sdk": ["../../packages/sdk/src/index.ts"],
+      "@veritas-layer/api-gateway": ["../../services/api-gateway/src/index.ts"],
+      "@veritas-layer/indexer": ["../../services/indexer/src/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,0 +1,11 @@
+[package]
+name = "veritas-transfer-policy"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "veritas_transfer_policy"
+path = "src/lib.rs"
+
+[dependencies]
+veritas-contract-shared = { path = "../shared" }

@@ -12,6 +12,7 @@
   "scripts": {
     "build": "npm run build --workspace=@veritas-layer/landing",
     "build:repo": "turbo run build",
+    "contracts:test": "cargo test --manifest-path contracts/Cargo.toml",
     "dev": "npm run dev --workspace=@veritas-layer/landing",
     "dev:repo": "turbo run dev --filter=@veritas-layer/landing",
     "lint": "npm run lint --workspace=@veritas-layer/landing",

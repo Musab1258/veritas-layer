@@ -1,0 +1,9 @@
+[workspace]
+members = [
+  "shared",
+  "identity-registry",
+  "transfer-policy",
+  "compliance-engine",
+  "asset-engine",
+]
+resolver = "2"

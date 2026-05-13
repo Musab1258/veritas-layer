@@ -105,6 +105,9 @@ export function LandingPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3 text-sm">
+            <Link className="button-secondary" href="/mvp">
+              Launch MVP
+            </Link>
             <Link className="button-secondary" href="#architecture">
               Architecture
             </Link>
@@ -123,7 +126,7 @@ export function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.28em] text-[var(--color-accent)]">
               <BadgeCheck className="h-3.5 w-3.5" />
-              Phase 2 documentation published
+              Phase 3 MVP live
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-[var(--color-heading)] sm:text-6xl lg:text-7xl">
               Privacy-preserving infrastructure for compliant asset issuance and
@@ -140,6 +143,9 @@ export function LandingPage() {
               <Link className="button-primary" href="#developer-surface">
                 Review the platform
                 <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link className="button-secondary" href="/mvp">
+                Run Phase 3 demo
               </Link>
               <Link className="button-secondary" href="#roadmap">
                 View roadmap
@@ -455,12 +461,16 @@ export function LandingPage() {
                 Ready for contributors, partners, and ecosystem reviewers.
               </h2>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-[var(--color-body)]">
-                The project now includes contributor-ready architecture docs, a
-                threat model, API definitions, and the Phase 1 foundation needed
-                to carry the zk compliance MVP into implementation.
+                The project now includes a working Phase 3 prototype for mock
+                KYC, proof generation, compliance validation, issuer-gated
+                transfer execution, and audit logging on top of the documented
+                architecture.
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
+              <Link className="button-secondary" href="/mvp">
+                View MVP
+              </Link>
               <Link
                 className="button-primary"
                 href="mailto:team@veritaslayer.xyz"

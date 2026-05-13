@@ -12,7 +12,7 @@ Deliverables:
 
 ## Milestone 2: MVP contract and service scaffolding
 
-Target phase: Phase 3
+Status: complete in Phase 3
 
 Deliverables:
 
@@ -22,7 +22,7 @@ Deliverables:
 
 ## Milestone 3: zk compliance MVP
 
-Target phase: Phase 3
+Status: implemented as the current prototype in Phase 3
 
 Deliverables:
 

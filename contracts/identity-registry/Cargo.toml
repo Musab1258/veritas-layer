@@ -1,0 +1,11 @@
+[package]
+name = "veritas-identity-registry"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "veritas_identity_registry"
+path = "src/lib.rs"
+
+[dependencies]
+veritas-contract-shared = { path = "../shared" }
