@@ -55,9 +55,35 @@ Priority scope:
 - CI maturity and documentation validation
 - SDK shaping and contributor-ready issue seeds
 
-## Phase 5 and beyond
+## Phase 5
 
-- maintainer application preparation
-- ecosystem-facing demos and docs
-- settlement and ownership expansion
-- partner integrations across the Stellar ecosystem
+Maintainer application preparation.
+
+Priority scope:
+
+- application-ready landing page messaging
+- accurate MVP and deployment documentation
+- reusable application narrative assets
+- demo flow packaging for reviewers and contributors
+
+## Phase 6
+
+Post-application expansion.
+
+Priority scope:
+
+- compliance engine expansion
+- asset support expansion
+- institutional API growth
+- ecosystem integrations
+
+## Phase 7
+
+Ecosystem scaling.
+
+Priority scope:
+
+- SDK and examples growth
+- plugin architecture
+- multi-issuer support
+- governance and ecosystem operating model

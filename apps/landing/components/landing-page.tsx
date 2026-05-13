@@ -72,6 +72,9 @@ const roadmap = [
   'Phase 2: architecture docs, threat model, and contributor-ready documentation',
   'Phase 3: zk compliance MVP with proof verification, transfer validation, and issuer dashboard foundations',
   'Phase 4: contributor onboarding, CI maturity, issue architecture, and SDK shaping',
+  'Phase 5: maintainer application assets, accurate MVP documentation, and operational packaging',
+  'Phase 6: compliance expansion, institutional APIs, and ecosystem integrations',
+  'Phase 7: SDK growth, plugin architecture, and governance-ready ecosystem scaling',
 ] as const;
 
 const fadeIn = {
@@ -126,17 +129,15 @@ export function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.28em] text-[var(--color-accent)]">
               <BadgeCheck className="h-3.5 w-3.5" />
-              Phase 4 contributor-ready repo
+              Phase 5 application-preparation repo
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-[var(--color-heading)] sm:text-6xl lg:text-7xl">
-              Privacy-preserving infrastructure for compliant asset issuance and
-              settlement.
+              Private, compliant infrastructure for tokenized real-world assets
+              on Stellar.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--color-body)] sm:text-lg">
-              Veritas Layer gives institutions and developers a modular
-              operating system for zk compliance, programmable transfer
-              controls, confidential ownership primitives, and Soroban-native
-              execution.
+              zk identity • programmable compliance • institutional settlement •
+              confidential ownership
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -419,9 +420,9 @@ export function LandingPage() {
               The landing page is the entry point, not the product boundary.
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--color-muted)]">
-              The roadmap is staged around credibility first, then
-              documentation, then a working zk compliance subsystem with
-              contributor-ready surfaces around it.
+              The roadmap progresses from repo credibility into application
+              readiness, then expands toward institutional integrations and a
+              reusable ecosystem surface.
             </p>
           </div>
 

@@ -10,7 +10,7 @@ Veritas Layer aims to become the compliance and privacy infrastructure layer for
 
 ## Current status
 
-This repository is now in Phase 4: contributor infrastructure and initial Soroban testnet deployment on top of the Phase 3 core MVP.
+This repository is now in Phase 5: application preparation and operational packaging on top of the Phase 4 contributor-ready MVP.
 
 Implemented today:
 
@@ -25,6 +25,7 @@ Implemented today:
 - TypeScript service modules for identity, proof generation, relay, audit logging, and indexing
 - Soroban-aligned Rust contract workspace for identity, policy, compliance, and asset transfer logic
 - testnet deployments for the current identity, policy, compliance, and asset contracts
+- Phase 5 application-preparation docs, reviewer demo flow, and roadmap assets for Phases 5 to 7
 
 Still not implemented:
 
@@ -158,13 +159,18 @@ Repo policies:
 - Phase 2: documentation, architecture, and contributor readiness
 - Phase 3: zk compliance MVP and issuer workflow implementation
 - Phase 4: contributor infrastructure, onboarding systems, CI maturity, and SDK shaping
-- Phase 5+: application preparation, ecosystem integration, and protocol expansion
+- Phase 5: application preparation, reviewer assets, and operational packaging
+- Phase 6: compliance, API, and integration expansion
+- Phase 7: ecosystem scaling, plugin direction, and governance planning
 
 Detailed planning lives in:
 
 - [Roadmap](./docs/roadmap/roadmap.md)
 - [Milestones](./docs/roadmap/milestones.md)
 - [Ecosystem vision](./docs/roadmap/ecosystem-vision.md)
+- [Application preparation](./docs/roadmap/application-preparation.md)
+- [Post-application expansion](./docs/roadmap/post-application-expansion.md)
+- [Ecosystem scaling](./docs/roadmap/ecosystem-scaling.md)
 
 ## Contributing
 

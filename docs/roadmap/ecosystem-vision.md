@@ -21,15 +21,18 @@ The project should eventually serve:
 - prove the compliance architecture with a narrow MVP
 - make the monorepo contributor-friendly
 - establish credible documentation and security posture
+- package the project for maintainer application review
 
 ### Medium term
 
 - expose stable SDK and API surfaces
 - expand asset and settlement workflows
 - support partner integrations and examples
+- introduce explicit extension points for plugins and provider adapters
 
 ### Long term
 
 - become a recognized middleware layer for privacy-preserving institutional asset workflows on Stellar
 - support richer settlement patterns and confidential ownership primitives
 - maintain a documented, auditable protocol surface for ecosystem teams
+- evolve toward a reusable plugin and governance ecosystem

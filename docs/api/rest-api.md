@@ -2,7 +2,34 @@
 
 ## Status
 
-This API is architectural documentation for the Phase 3 implementation target. The endpoints below are not live yet.
+The repository currently implements a local MVP API under `/api/mvp` inside the landing app.
+
+The institutional `/v1` API described later in this document is still a target surface for later phases.
+
+## Current MVP API
+
+Base path:
+
+- `/api/mvp`
+
+Implemented routes:
+
+| Method | Path                   | Purpose                                           |
+| ------ | ---------------------- | ------------------------------------------------- |
+| `GET`  | `/api/mvp/state`       | read the current MVP snapshot                     |
+| `POST` | `/api/mvp/reset`       | reset the in-memory MVP environment               |
+| `POST` | `/api/mvp/connect-wallet` | mark an investor wallet as connected           |
+| `POST` | `/api/mvp/configure-asset` | update the demo asset and compliance policy    |
+| `POST` | `/api/mvp/kyc`         | issue a mock KYC credential                       |
+| `POST` | `/api/mvp/proof`       | generate an off-chain proof record                |
+| `POST` | `/api/mvp/submit-proof` | verify a proof and mark the wallet eligible      |
+| `POST` | `/api/mvp/transfers`   | execute a compliance-gated transfer               |
+
+Notes:
+
+- the MVP state is in-memory and process-local
+- the flow is designed for contributor and reviewer walkthroughs
+- the routes mirror the current Next.js implementation in `apps/landing/app/api/mvp/`
 
 ## Conventions
 
@@ -18,6 +45,8 @@ This API is architectural documentation for the Phase 3 implementation target. T
 - API keys for approved server-to-server integrations
 
 ## Endpoint groups
+
+The following endpoint groups describe the target institutional API after the MVP routes are extracted into dedicated services and versioned surfaces.
 
 ### Identity
 

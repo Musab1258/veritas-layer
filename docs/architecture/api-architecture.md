@@ -15,6 +15,11 @@ Used for:
 - compliance preflight requests
 - machine-to-machine integrations
 
+Current implementation note:
+
+- the local MVP uses unversioned `/api/mvp` routes inside the Next.js app
+- the future institutional API should move to versioned `/v1` surfaces when the service boundaries are extracted
+
 ### GraphQL API
 
 Used for:
