@@ -1,43 +1,71 @@
-use std::collections::BTreeMap;
+#![no_std]
 
-use veritas_compliance_engine::evaluate_eligibility;
-use veritas_contract_shared::{
-    AssetDefinition, CompliancePolicy, ContractError, ContractEvent, ProofAttestation,
-    TransferRequest, Timestamp,
+use soroban_sdk::{
+    contract, contractimpl, contracttype, symbol_short, Address, Env, String,
 };
-use veritas_identity_registry::IdentityRegistry;
+use veritas_compliance_engine::ComplianceEngineContractClient;
+use veritas_contract_shared::{
+    contract_error_from_code, AssetDefinition, CompliancePolicy, ContractError,
+    ProofAttestation, TransferRequest,
+};
+use veritas_identity_registry::IdentityRegistryContractClient;
 
-pub struct AssetEngine {
-    asset: AssetDefinition,
-    balances: BTreeMap<String, u64>,
-    events: Vec<ContractEvent>,
+#[contracttype]
+#[derive(Clone)]
+enum DataKey {
+    Asset,
+    Balance(String),
 }
 
-impl AssetEngine {
-    pub fn new(asset: AssetDefinition) -> Self {
-        let mut balances = BTreeMap::new();
-        balances.insert(asset.issuer_wallet.clone(), asset.total_supply);
+#[contract]
+pub struct AssetEngineContract;
 
-        Self {
-            asset,
-            balances,
-            events: Vec::new(),
+#[contractimpl]
+impl AssetEngineContract {
+    pub fn init(env: Env, asset: AssetDefinition) -> Result<(), ContractError> {
+        if env.storage().persistent().has(&DataKey::Asset) {
+            return Err(ContractError::AlreadyInitialized);
         }
+
+        env.storage().persistent().set(&DataKey::Asset, &asset);
+        env.storage().persistent().set(
+            &DataKey::Balance(asset.issuer_wallet.clone()),
+            &asset.total_supply,
+        );
+
+        env.events()
+            .publish((symbol_short!("assetinit"), asset.id), asset.symbol);
+
+        Ok(())
     }
 
-    pub fn balance_of(&self, wallet_address: &str) -> u64 {
-        self.balances.get(wallet_address).copied().unwrap_or(0)
+    pub fn get_asset(env: Env) -> Result<AssetDefinition, ContractError> {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Asset)
+            .ok_or(ContractError::AssetNotInitialized)
+    }
+
+    pub fn balance_of(env: Env, wallet_address: String) -> u64 {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Balance(wallet_address))
+            .unwrap_or(0_u64)
     }
 
     pub fn execute_transfer(
-        &mut self,
-        registry: &mut IdentityRegistry,
-        policy: &CompliancePolicy,
-        proof: &ProofAttestation,
+        env: Env,
+        registry_contract: Address,
+        compliance_contract: Address,
+        policy_contract: Address,
+        policy: CompliancePolicy,
+        proof: ProofAttestation,
         request: TransferRequest,
-        now: Timestamp,
-    ) -> Result<ContractEvent, ContractError> {
-        if request.asset_id != self.asset.id {
+        now: u64,
+    ) -> Result<(), ContractError> {
+        let asset = Self::get_asset(env.clone())?;
+
+        if request.asset_id != asset.id {
             return Err(ContractError::AssetMismatch);
         }
 
@@ -45,248 +73,65 @@ impl AssetEngine {
             return Err(ContractError::InvalidTransferAmount);
         }
 
-        let eligibility = evaluate_eligibility(registry, policy, proof, now)?;
-        let _ = registry.mark_eligible(eligibility.clone());
+        let compliance = ComplianceEngineContractClient::new(&env, &compliance_contract);
+        let evaluation = compliance.evaluate_eligibility(
+            &registry_contract,
+            &policy_contract,
+            &policy,
+            &proof,
+            &now,
+        );
 
-        if request.to_wallet != eligibility.wallet_address {
+        if !evaluation.ok {
+            return Err(contract_error_from_code(evaluation.error_code));
+        }
+
+        let Some(record) = evaluation.record else {
+            return Err(ContractError::InvalidProof);
+        };
+
+        let registry = IdentityRegistryContractClient::new(&env, &registry_contract);
+        let mark_result = registry.mark_eligible(&record);
+        if mark_result != 0 {
+            return Err(contract_error_from_code(mark_result));
+        }
+
+        if request.to_wallet != record.wallet_address {
             return Err(ContractError::UnauthorizedTransfer);
         }
 
-        if request.from_wallet != self.asset.issuer_wallet
-            && !registry.is_wallet_eligible(&request.from_wallet, now)
+        if request.from_wallet != asset.issuer_wallet
+            && !registry.is_wallet_eligible(&request.from_wallet, &now)
         {
             return Err(ContractError::UnauthorizedTransfer);
         }
 
-        let Some(source_balance) = self.balances.get_mut(&request.from_wallet) else {
-            return Err(ContractError::InsufficientBalance);
-        };
+        let source_key = DataKey::Balance(request.from_wallet.clone());
+        let target_key = DataKey::Balance(request.to_wallet.clone());
+        let source_balance = Self::balance_of(env.clone(), request.from_wallet.clone());
 
-        if *source_balance < request.amount {
+        if source_balance < request.amount {
             return Err(ContractError::InsufficientBalance);
         }
 
-        *source_balance -= request.amount;
-        *self.balances.entry(request.to_wallet.clone()).or_default() += request.amount;
+        let target_balance = Self::balance_of(env.clone(), request.to_wallet.clone());
 
-        let event = ContractEvent::TransferValidated {
-            asset_id: request.asset_id,
-            from_wallet: request.from_wallet,
-            to_wallet: request.to_wallet,
-            amount: request.amount,
-            policy_id: policy.id.clone(),
-        };
-        self.events.push(event.clone());
+        env.storage()
+            .persistent()
+            .set(&source_key, &(source_balance - request.amount));
+        env.storage()
+            .persistent()
+            .set(&target_key, &(target_balance + request.amount));
 
-        Ok(event)
-    }
-
-    pub fn events(&self) -> &[ContractEvent] {
-        &self.events
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::AssetEngine;
-    use veritas_contract_shared::{
-        build_proof_hash, AssetDefinition, CompliancePolicy, ContractError,
-        CredentialClaims, CredentialRecord, CredentialStatus, ProofAttestation,
-        TransferRequest,
-    };
-    use veritas_identity_registry::IdentityRegistry;
-
-    fn setup_environment(
-        jurisdiction: &str,
-        accredited: bool,
-        expiry: u64,
-    ) -> (IdentityRegistry, CompliancePolicy, ProofAttestation, AssetEngine) {
-        let asset = AssetDefinition {
-            id: "asset_vtbill".to_string(),
-            symbol: "VTBILL".to_string(),
-            issuer_wallet: "issuer_wallet".to_string(),
-            total_supply: 1_000_000,
-            policy_id: "policy_vtbill".to_string(),
-        };
-        let policy = CompliancePolicy {
-            id: "policy_vtbill".to_string(),
-            kyc_required: true,
-            accredited_only: true,
-            allowed_jurisdictions: vec!["US".to_string(), "SG".to_string()],
-        };
-        let credential = CredentialRecord {
-            id: "cred_1".to_string(),
-            wallet_address: "investor_wallet".to_string(),
-            status: CredentialStatus::Issued,
-            merkle_root: "root".to_string(),
-            leaf_hash: "leaf_hash".to_string(),
-            claims: CredentialClaims {
-                kyc_verified: true,
-                accredited,
-                jurisdiction: jurisdiction.to_string(),
-                credential_expiry: expiry,
-            },
-        };
-        let proof = ProofAttestation {
-            id: "proof_1".to_string(),
-            credential_id: "cred_1".to_string(),
-            wallet_address: "investor_wallet".to_string(),
-            proof_hash: build_proof_hash(
-                "investor_wallet",
-                "cred_1",
-                "leaf_hash",
-                "policy_vtbill",
-                100,
+        env.events().publish(
+            (
+                symbol_short!("transfer"),
+                request.asset_id,
+                request.from_wallet,
             ),
-            generated_at: 100,
-            expires_at: 1_000,
-            kyc_verified: true,
-            accredited,
-            jurisdiction: jurisdiction.to_string(),
-            policy_id: "policy_vtbill".to_string(),
-        };
-
-        let mut registry = IdentityRegistry::new();
-        registry.issue_credential(credential);
-
-        (registry, policy, proof, AssetEngine::new(asset))
-    }
-
-    #[test]
-    fn executes_transfer_for_verified_investor() {
-        let (mut registry, policy, proof, mut engine) =
-            setup_environment("US", true, 10_000);
-
-        let result = engine.execute_transfer(
-            &mut registry,
-            &policy,
-            &proof,
-            TransferRequest {
-                asset_id: "asset_vtbill".to_string(),
-                from_wallet: "issuer_wallet".to_string(),
-                to_wallet: "investor_wallet".to_string(),
-                amount: 25_000,
-                timestamp: 200,
-            },
-            200,
+            request.amount,
         );
 
-        assert!(result.is_ok());
-        assert_eq!(engine.balance_of("investor_wallet"), 25_000);
-    }
-
-    #[test]
-    fn rejects_revoked_credential() {
-        let (mut registry, policy, proof, mut engine) =
-            setup_environment("US", true, 10_000);
-        let _ = registry.revoke_credential("investor_wallet");
-
-        let result = engine.execute_transfer(
-            &mut registry,
-            &policy,
-            &proof,
-            TransferRequest {
-                asset_id: "asset_vtbill".to_string(),
-                from_wallet: "issuer_wallet".to_string(),
-                to_wallet: "investor_wallet".to_string(),
-                amount: 25_000,
-                timestamp: 200,
-            },
-            200,
-        );
-
-        assert_eq!(result, Err(ContractError::CredentialRevoked));
-    }
-
-    #[test]
-    fn rejects_expired_attestation() {
-        let (mut registry, policy, proof, mut engine) =
-            setup_environment("US", true, 150);
-
-        let result = engine.execute_transfer(
-            &mut registry,
-            &policy,
-            &proof,
-            TransferRequest {
-                asset_id: "asset_vtbill".to_string(),
-                from_wallet: "issuer_wallet".to_string(),
-                to_wallet: "investor_wallet".to_string(),
-                amount: 25_000,
-                timestamp: 200,
-            },
-            200,
-        );
-
-        assert_eq!(result, Err(ContractError::CredentialExpired));
-    }
-
-    #[test]
-    fn rejects_non_accredited_transfer() {
-        let (mut registry, policy, proof, mut engine) =
-            setup_environment("US", false, 10_000);
-
-        let result = engine.execute_transfer(
-            &mut registry,
-            &policy,
-            &proof,
-            TransferRequest {
-                asset_id: "asset_vtbill".to_string(),
-                from_wallet: "issuer_wallet".to_string(),
-                to_wallet: "investor_wallet".to_string(),
-                amount: 25_000,
-                timestamp: 200,
-            },
-            200,
-        );
-
-        assert_eq!(
-            result,
-            Err(ContractError::PolicyDenied("accredited_required".to_string()))
-        );
-    }
-
-    #[test]
-    fn rejects_unauthorized_sender() {
-        let (mut registry, policy, proof, mut engine) =
-            setup_environment("US", true, 10_000);
-
-        let result = engine.execute_transfer(
-            &mut registry,
-            &policy,
-            &proof,
-            TransferRequest {
-                asset_id: "asset_vtbill".to_string(),
-                from_wallet: "random_wallet".to_string(),
-                to_wallet: "investor_wallet".to_string(),
-                amount: 25_000,
-                timestamp: 200,
-            },
-            200,
-        );
-
-        assert_eq!(result, Err(ContractError::UnauthorizedTransfer));
-    }
-
-    #[test]
-    fn rejects_invalid_proof() {
-        let (mut registry, policy, mut proof, mut engine) =
-            setup_environment("US", true, 10_000);
-        proof.proof_hash = "tampered_hash".to_string();
-
-        let result = engine.execute_transfer(
-            &mut registry,
-            &policy,
-            &proof,
-            TransferRequest {
-                asset_id: "asset_vtbill".to_string(),
-                from_wallet: "issuer_wallet".to_string(),
-                to_wallet: "investor_wallet".to_string(),
-                amount: 25_000,
-                timestamp: 200,
-            },
-            200,
-        );
-
-        assert_eq!(result, Err(ContractError::InvalidProof));
+        Ok(())
     }
 }

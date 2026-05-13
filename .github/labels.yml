@@ -1,0 +1,71 @@
+- name: good first issue
+  color: "1D76DB"
+  description: Beginner-friendly issue with clear scope and low coordination overhead.
+
+- name: help wanted
+  color: "0E8A16"
+  description: Maintainers are actively looking for external contributors.
+
+- name: high priority
+  color: "D93F0B"
+  description: Important work that should be scheduled soon.
+
+- name: blocked
+  color: "B60205"
+  description: Work cannot continue until a dependency or decision is resolved.
+
+- name: frontend
+  color: "0F8B8D"
+  description: Landing page, dashboard, or application UI work.
+
+- name: backend
+  color: "0052CC"
+  description: API, service, and indexing work.
+
+- name: smart-contract
+  color: "5319E7"
+  description: Rust contract-core logic and Soroban-aligned contract work.
+
+- name: zk
+  color: "6F42C1"
+  description: Proof systems, circuits, and cryptographic integration work.
+
+- name: docs
+  color: "22863A"
+  description: Documentation, diagrams, and contributor education work.
+
+- name: infrastructure
+  color: "0366D6"
+  description: CI, deployment, repo automation, and environment setup work.
+
+- name: testing
+  color: "FBCA04"
+  description: Validation, QA, and regression coverage work.
+
+- name: security
+  color: "B60205"
+  description: Security-sensitive changes or reviews.
+
+- name: architecture
+  color: "1B4B91"
+  description: Cross-cutting design and system-boundary work.
+
+- name: performance
+  color: "C2E0C6"
+  description: Performance measurement or optimization work.
+
+- name: api
+  color: "006B75"
+  description: REST, GraphQL, auth flow, or integration interface work.
+
+- name: sdk
+  color: "0B7285"
+  description: Client libraries, shared developer utilities, and typed interfaces.
+
+- name: audit
+  color: "8A2BE2"
+  description: Review work focused on correctness, traceability, or controls.
+
+- name: research
+  color: "A2EEEF"
+  description: Exploratory or architecture research work.

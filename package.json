@@ -15,6 +15,7 @@
     "contracts:test": "cargo test --manifest-path contracts/Cargo.toml",
     "dev": "npm run dev --workspace=@veritas-layer/landing",
     "dev:repo": "turbo run dev --filter=@veritas-layer/landing",
+    "docs:check": "node scripts/verify-doc-links.mjs",
     "lint": "npm run lint --workspace=@veritas-layer/landing",
     "lint:repo": "turbo run lint",
     "format": "prettier --write .",

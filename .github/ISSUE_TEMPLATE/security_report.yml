@@ -1,0 +1,53 @@
+name: Security report
+description: Sanitized template for security-relevant findings. Do not disclose exploit details publicly.
+title: "[security] "
+labels:
+  - security
+  - audit
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template only for sanitized reports that are safe to discuss in public. If the finding could expose users, credentials, authorization paths, or a live exploit chain, stop and follow the private disclosure instructions in `SECURITY.md` instead.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Estimated severity
+      options:
+        - low
+        - medium
+        - high
+        - critical
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - contracts
+        - landing / MVP
+        - SDK / shared types
+        - docs / contributor workflow
+        - CI / infrastructure
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Sanitized summary
+      description: Describe the class of issue without publishing sensitive exploit details.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential impact
+      description: Explain what could go wrong if the issue were real or unmitigated.
+    validations:
+      required: true
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested mitigation
+      description: List the next steps maintainers should take.

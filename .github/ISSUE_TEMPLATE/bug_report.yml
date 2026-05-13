@@ -1,0 +1,64 @@
+name: Bug report
+description: Report a reproducible defect in the current implementation or contributor workflow.
+title: "[bug] "
+labels:
+  - help wanted
+  - testing
+body:
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      description: Which subsystem is impacted?
+      options:
+        - apps/landing
+        - apps/landing/mvp
+        - packages/sdk
+        - packages/shared-types
+        - contracts
+        - docs
+        - contributor workflow / CI
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the defect and why it matters.
+      placeholder: The current behavior breaks...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest reliable reproduction.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe the intended result.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation attempted
+      description: List commands, screenshots, or traces already collected.
+      placeholder: |
+        - npm run lint
+        - npm run typecheck
+        - cargo test --manifest-path contracts/Cargo.toml
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Link any docs, related issues, or architecture references.

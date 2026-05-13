@@ -4,6 +4,7 @@
 
 For changes in the current repository:
 
+- `npm run docs:check`
 - `npm run lint`
 - `npm run typecheck`
 - `npm run build`
@@ -25,3 +26,5 @@ As contracts and services are added, the testing matrix should expand to include
 - contract tests
 - proof verification compatibility tests
 - policy and authorization edge-case tests
+
+For the Phase 4 contributor workflow, use the detailed guide in `docs/onboarding/testing-guide.md`.

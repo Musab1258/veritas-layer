@@ -1,0 +1,53 @@
+name: Feature request
+description: Propose an implementation-scoped improvement tied to the Veritas Layer architecture.
+title: "[feature] "
+labels:
+  - help wanted
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Which workstream does this belong to?
+      options:
+        - frontend
+        - backend
+        - smart-contract
+        - zk
+        - api
+        - sdk
+        - infrastructure
+        - docs
+        - testing
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Explain why the feature matters and how it fits the architecture.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Technical scope
+      description: List the expected files, modules, interfaces, or flows involved.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Provide concrete success conditions.
+      placeholder: |
+        - behavior A is implemented
+        - tests or checks pass
+        - docs are updated
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Link architecture docs, roadmap items, or earlier discussions.

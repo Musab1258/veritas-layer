@@ -1,11 +1,15 @@
 [package]
 name = "veritas-transfer-policy"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+publish = false
 
 [lib]
 name = "veritas_transfer_policy"
 path = "src/lib.rs"
+crate-type = ["lib", "cdylib"]
+doctest = false
 
 [dependencies]
+soroban-sdk = { workspace = true }
 veritas-contract-shared = { path = "../shared" }

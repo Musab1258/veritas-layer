@@ -71,7 +71,7 @@ const roadmap = [
   'Phase 1: brand system, repo foundation, and landing page',
   'Phase 2: architecture docs, threat model, and contributor-ready documentation',
   'Phase 3: zk compliance MVP with proof verification, transfer validation, and issuer dashboard foundations',
-  'Phase 4: public issues, SDK surface area, and contributor onboarding systems',
+  'Phase 4: contributor onboarding, CI maturity, issue architecture, and SDK shaping',
 ] as const;
 
 const fadeIn = {
@@ -126,7 +126,7 @@ export function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.28em] text-[var(--color-accent)]">
               <BadgeCheck className="h-3.5 w-3.5" />
-              Phase 3 MVP live
+              Phase 4 contributor-ready repo
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-[var(--color-heading)] sm:text-6xl lg:text-7xl">
               Privacy-preserving infrastructure for compliant asset issuance and
@@ -145,7 +145,7 @@ export function LandingPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link className="button-secondary" href="/mvp">
-                Run Phase 3 demo
+                Run MVP demo
               </Link>
               <Link className="button-secondary" href="#roadmap">
                 View roadmap
@@ -461,10 +461,11 @@ export function LandingPage() {
                 Ready for contributors, partners, and ecosystem reviewers.
               </h2>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-[var(--color-body)]">
-                The project now includes a working Phase 3 prototype for mock
-                KYC, proof generation, compliance validation, issuer-gated
-                transfer execution, and audit logging on top of the documented
-                architecture.
+                The project now includes the Phase 3 prototype for mock KYC,
+                proof generation, compliance validation, issuer-gated transfer
+                execution, and audit logging, plus the Phase 4 contributor
+                infrastructure needed to onboard collaborators around that
+                documented architecture.
               </p>
             </div>
             <div className="flex flex-wrap gap-4">

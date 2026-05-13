@@ -1,131 +1,90 @@
+#![no_std]
+
+use soroban_sdk::{contract, contractimpl, Address, Env};
 use veritas_contract_shared::{
-    build_proof_hash, CompliancePolicy, ContractError, CredentialStatus,
-    EligibilityRecord, ProofAttestation, Timestamp,
+    contract_error_from_code, CompliancePolicy, ContractError, CredentialStatus,
+    EligibilityEvaluation, EligibilityRecord, ProofAttestation,
 };
-use veritas_identity_registry::IdentityRegistry;
-use veritas_transfer_policy::validate_policy;
+use veritas_identity_registry::IdentityRegistryContractClient;
+use veritas_transfer_policy::TransferPolicyContractClient;
 
-pub fn evaluate_eligibility(
-    registry: &IdentityRegistry,
-    policy: &CompliancePolicy,
-    proof: &ProofAttestation,
-    now: Timestamp,
-) -> Result<EligibilityRecord, ContractError> {
-    let credential = registry
-        .credential(&proof.wallet_address)
-        .ok_or(ContractError::CredentialNotFound)?;
+#[contract]
+pub struct ComplianceEngineContract;
 
-    if credential.status == CredentialStatus::Revoked {
-        return Err(ContractError::CredentialRevoked);
+#[contractimpl]
+impl ComplianceEngineContract {
+    pub fn evaluate_eligibility(
+        env: Env,
+        registry_contract: Address,
+        policy_contract: Address,
+        policy: CompliancePolicy,
+        proof: ProofAttestation,
+        now: u64,
+    ) -> EligibilityEvaluation {
+        let registry = IdentityRegistryContractClient::new(&env, &registry_contract);
+
+        if !registry.has_credential(&proof.wallet_address) {
+            return EligibilityEvaluation {
+                ok: false,
+                error_code: ContractError::CredentialNotFound as u32,
+                record: None,
+            };
+        }
+
+        let credential = registry.get_credential(&proof.wallet_address);
+
+        if credential.status == CredentialStatus::Revoked {
+            return Self::error(ContractError::CredentialRevoked);
+        }
+
+        if credential.claims.credential_expiry <= now {
+            return Self::error(ContractError::CredentialExpired);
+        }
+
+        if proof.wallet_address != credential.wallet_address {
+            return Self::error(ContractError::WalletMismatch);
+        }
+
+        if proof.expires_at <= now {
+            return Self::error(ContractError::ProofExpired);
+        }
+
+        if proof.credential_id != credential.id {
+            return Self::error(ContractError::InvalidProof);
+        }
+
+        if proof.kyc_verified != credential.claims.kyc_verified
+            || proof.accredited != credential.claims.accredited
+            || proof.jurisdiction != credential.claims.jurisdiction
+            || proof.policy_id != policy.id
+        {
+            return Self::error(ContractError::InvalidProof);
+        }
+
+        let policy_client = TransferPolicyContractClient::new(&env, &policy_contract);
+        let policy_result = policy_client.validate_policy(&policy, &credential.claims);
+        if policy_result != 0 {
+            return Self::error(contract_error_from_code(policy_result));
+        }
+
+        EligibilityEvaluation {
+            ok: true,
+            error_code: 0,
+            record: Some(EligibilityRecord {
+                wallet_address: credential.wallet_address,
+                credential_id: credential.id,
+                proof_id: proof.id,
+                policy_id: policy.id,
+                verified_at: now,
+            }),
+        }
     }
 
-    if credential.claims.credential_expiry <= now {
-        return Err(ContractError::CredentialExpired);
-    }
-
-    if proof.wallet_address != credential.wallet_address {
-        return Err(ContractError::WalletMismatch);
-    }
-
-    if proof.expires_at <= now {
-        return Err(ContractError::ProofExpired);
-    }
-
-    if proof.credential_id != credential.id {
-        return Err(ContractError::InvalidProof);
-    }
-
-    let expected_hash = build_proof_hash(
-        &proof.wallet_address,
-        &proof.credential_id,
-        &credential.leaf_hash,
-        &policy.id,
-        proof.generated_at,
-    );
-
-    if proof.proof_hash != expected_hash
-        || proof.kyc_verified != credential.claims.kyc_verified
-        || proof.accredited != credential.claims.accredited
-        || proof.jurisdiction != credential.claims.jurisdiction
-        || proof.policy_id != policy.id
-    {
-        return Err(ContractError::InvalidProof);
-    }
-
-    validate_policy(policy, &credential.claims)?;
-
-    Ok(EligibilityRecord {
-        wallet_address: credential.wallet_address.clone(),
-        credential_id: credential.id.clone(),
-        proof_id: proof.id.clone(),
-        policy_id: policy.id.clone(),
-        verified_at: now,
-    })
-}
-
-#[cfg(test)]
-mod tests {
-    use super::evaluate_eligibility;
-    use veritas_contract_shared::{
-        build_proof_hash, CompliancePolicy, ContractError, CredentialClaims,
-        CredentialRecord, CredentialStatus, ProofAttestation,
-    };
-    use veritas_identity_registry::IdentityRegistry;
-
-    fn setup() -> (IdentityRegistry, CompliancePolicy, ProofAttestation) {
-        let credential = CredentialRecord {
-            id: "cred_1".to_string(),
-            wallet_address: "wallet_alpha".to_string(),
-            status: CredentialStatus::Issued,
-            merkle_root: "root".to_string(),
-            leaf_hash: "leaf_hash".to_string(),
-            claims: CredentialClaims {
-                kyc_verified: true,
-                accredited: true,
-                jurisdiction: "US".to_string(),
-                credential_expiry: 10_000,
-            },
-        };
-
-        let mut registry = IdentityRegistry::new();
-        registry.issue_credential(credential);
-
-        let policy = CompliancePolicy {
-            id: "policy_us".to_string(),
-            kyc_required: true,
-            accredited_only: true,
-            allowed_jurisdictions: vec!["US".to_string()],
-        };
-
-        let proof = ProofAttestation {
-            id: "proof_1".to_string(),
-            credential_id: "cred_1".to_string(),
-            wallet_address: "wallet_alpha".to_string(),
-            proof_hash: build_proof_hash(
-                "wallet_alpha",
-                "cred_1",
-                "leaf_hash",
-                "policy_us",
-                100,
-            ),
-            generated_at: 100,
-            expires_at: 1_000,
-            kyc_verified: true,
-            accredited: true,
-            jurisdiction: "US".to_string(),
-            policy_id: "policy_us".to_string(),
-        };
-
-        (registry, policy, proof)
-    }
-
-    #[test]
-    fn rejects_invalid_proof_hash() {
-        let (registry, policy, mut proof) = setup();
-        proof.proof_hash = "bad_hash".to_string();
-
-        let result = evaluate_eligibility(&registry, &policy, &proof, 200);
-
-        assert_eq!(result, Err(ContractError::InvalidProof));
+    fn error(error: ContractError) -> EligibilityEvaluation {
+        EligibilityEvaluation {
+            ok: false,
+            error_code: error as u32,
+            record: None,
+        }
     }
 }

@@ -16,13 +16,14 @@ Veritas Layer is being built as institutional infrastructure, not a demo app. Co
 
 ## Current repository state
 
-The only fully implemented application surface today is `apps/landing`. The contracts, services, and most shared packages are planned and documented but not yet built.
+The primary implemented application surface today is `apps/landing`. The repository also includes shared types, a small MVP SDK surface, Rust contract-core crates, and typed service scaffolding aligned to the documented architecture.
 
 That matters for contributor expectations:
 
 - documentation and architecture changes can be merged now
-- landing page and workspace tooling changes can be tested locally now
-- contract and service contributions should follow the Phase 2 architecture docs until those modules are scaffolded
+- landing page, SDK, shared-type, and workspace tooling changes can be tested locally now
+- contract contributions can be validated with the current Rust workspace
+- service contributions should stay aligned with the Phase 2 architecture until those modules move out of scaffolded form
 
 ## Prerequisites
 
@@ -55,6 +56,7 @@ npm run dev
 Validate the current workspace:
 
 ```bash
+npm run docs:check
 npm run lint
 npm run typecheck
 npm run build
@@ -112,10 +114,17 @@ PRs should include:
 
 For the current repository state:
 
+- contributor documentation changes must pass `npm run docs:check`
 - landing page changes must pass `npm run lint`
 - landing page changes must pass `npm run typecheck`
 - changes that affect bundling or imports should also pass `npm run build`
 - documentation changes must keep links, commands, and status descriptions accurate
+
+Detailed onboarding lives in:
+
+- `docs/onboarding/README.md`
+- `docs/onboarding/architecture-walkthrough.md`
+- `docs/onboarding/debugging-guide.md`
 
 For upcoming contract and backend modules:
 

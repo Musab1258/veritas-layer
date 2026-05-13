@@ -1,17 +1,18 @@
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
+#![no_std]
 
-pub type Timestamp = u64;
+use soroban_sdk::{contracterror, contracttype, String, Vec};
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CredentialClaims {
     pub kyc_verified: bool,
     pub accredited: bool,
     pub jurisdiction: String,
-    pub credential_expiry: Timestamp,
+    pub credential_expiry: u64,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum CredentialStatus {
     Issued,
     Verified,
@@ -19,7 +20,8 @@ pub enum CredentialStatus {
     Expired,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CredentialRecord {
     pub id: String,
     pub wallet_address: String,
@@ -29,7 +31,8 @@ pub struct CredentialRecord {
     pub claims: CredentialClaims,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CompliancePolicy {
     pub id: String,
     pub kyc_required: bool,
@@ -37,30 +40,41 @@ pub struct CompliancePolicy {
     pub allowed_jurisdictions: Vec<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProofAttestation {
     pub id: String,
     pub credential_id: String,
     pub wallet_address: String,
     pub proof_hash: String,
-    pub generated_at: Timestamp,
-    pub expires_at: Timestamp,
+    pub generated_at: u64,
+    pub expires_at: u64,
     pub kyc_verified: bool,
     pub accredited: bool,
     pub jurisdiction: String,
     pub policy_id: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct EligibilityRecord {
     pub wallet_address: String,
     pub credential_id: String,
     pub proof_id: String,
     pub policy_id: String,
-    pub verified_at: Timestamp,
+    pub verified_at: u64,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct EligibilityEvaluation {
+    pub ok: bool,
+    pub error_code: u32,
+    pub record: Option<EligibilityRecord>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AssetDefinition {
     pub id: String,
     pub symbol: String,
@@ -69,81 +83,53 @@ pub struct AssetDefinition {
     pub policy_id: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TransferRequest {
     pub asset_id: String,
     pub from_wallet: String,
     pub to_wallet: String,
     pub amount: u64,
-    pub timestamp: Timestamp,
+    pub timestamp: u64,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum ContractEvent {
-    CredentialVerified {
-        wallet_address: String,
-        credential_id: String,
-        policy_id: String,
-    },
-    CredentialRevoked {
-        wallet_address: String,
-        credential_id: String,
-    },
-    TransferValidated {
-        asset_id: String,
-        from_wallet: String,
-        to_wallet: String,
-        amount: u64,
-        policy_id: String,
-    },
-    TransferRejected {
-        asset_id: String,
-        reason_code: String,
-    },
-    PolicyUpdated {
-        policy_id: String,
-    },
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[repr(u32)]
 pub enum ContractError {
-    CredentialNotFound,
-    CredentialRevoked,
-    CredentialExpired,
-    ProofExpired,
-    InvalidProof,
-    WalletMismatch,
-    PolicyDenied(String),
-    UnauthorizedTransfer,
-    InsufficientBalance,
-    AssetMismatch,
-    InvalidTransferAmount,
+    CredentialNotFound = 1,
+    CredentialRevoked = 2,
+    CredentialExpired = 3,
+    ProofExpired = 4,
+    InvalidProof = 5,
+    WalletMismatch = 6,
+    KycRequired = 7,
+    AccreditedRequired = 8,
+    JurisdictionBlocked = 9,
+    UnauthorizedTransfer = 10,
+    InsufficientBalance = 11,
+    AssetMismatch = 12,
+    InvalidTransferAmount = 13,
+    AlreadyInitialized = 14,
+    AssetNotInitialized = 15,
 }
 
-pub fn simple_hash(parts: &[&str]) -> String {
-    let mut hasher = DefaultHasher::new();
-
-    for part in parts {
-        part.hash(&mut hasher);
+pub fn contract_error_from_code(code: u32) -> ContractError {
+    match code {
+        1 => ContractError::CredentialNotFound,
+        2 => ContractError::CredentialRevoked,
+        3 => ContractError::CredentialExpired,
+        4 => ContractError::ProofExpired,
+        5 => ContractError::InvalidProof,
+        6 => ContractError::WalletMismatch,
+        7 => ContractError::KycRequired,
+        8 => ContractError::AccreditedRequired,
+        9 => ContractError::JurisdictionBlocked,
+        10 => ContractError::UnauthorizedTransfer,
+        11 => ContractError::InsufficientBalance,
+        12 => ContractError::AssetMismatch,
+        13 => ContractError::InvalidTransferAmount,
+        14 => ContractError::AlreadyInitialized,
+        _ => ContractError::AssetNotInitialized,
     }
-
-    format!("{:016x}", hasher.finish())
-}
-
-pub fn build_proof_hash(
-    wallet_address: &str,
-    credential_id: &str,
-    leaf_hash: &str,
-    policy_id: &str,
-    generated_at: Timestamp,
-) -> String {
-    let generated = generated_at.to_string();
-
-    simple_hash(&[
-        wallet_address,
-        credential_id,
-        leaf_hash,
-        policy_id,
-        generated.as_str(),
-    ])
 }

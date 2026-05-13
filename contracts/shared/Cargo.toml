@@ -1,8 +1,12 @@
 [package]
 name = "veritas-contract-shared"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+publish = false
 
 [lib]
 name = "veritas_contract_shared"
 path = "src/lib.rs"
+
+[dependencies]
+soroban-sdk = { workspace = true }

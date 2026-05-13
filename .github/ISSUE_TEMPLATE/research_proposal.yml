@@ -1,0 +1,49 @@
+name: Research proposal
+description: Capture an architecture, protocol, or ecosystem question that needs investigation before implementation.
+title: "[research] "
+labels:
+  - research
+body:
+  - type: input
+    id: question
+    attributes:
+      label: Research question
+      description: State the exact question the investigation should answer.
+      placeholder: How should Veritas Layer...
+    validations:
+      required: true
+  - type: dropdown
+    id: module
+    attributes:
+      label: Primary module
+      options:
+        - identity
+        - compliance
+        - settlement
+        - indexing
+        - API / SDK
+        - contributor infrastructure
+        - security
+        - ecosystem integration
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Explain why this question blocks or improves execution.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Expected output
+      description: Describe the artifact maintainers should get from the research.
+      placeholder: Architecture note, comparison matrix, proposal PR, benchmark summary...
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Starting references
+      description: Link related repo docs, code paths, or external materials.

@@ -1,13 +1,17 @@
 [package]
 name = "veritas-compliance-engine"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+publish = false
 
 [lib]
 name = "veritas_compliance_engine"
 path = "src/lib.rs"
+crate-type = ["lib", "cdylib"]
+doctest = false
 
 [dependencies]
+soroban-sdk = { workspace = true }
 veritas-contract-shared = { path = "../shared" }
 veritas-identity-registry = { path = "../identity-registry" }
 veritas-transfer-policy = { path = "../transfer-policy" }

@@ -10,7 +10,7 @@ Veritas Layer aims to become the compliance and privacy infrastructure layer for
 
 ## Current status
 
-This repository is now in Phase 3: core MVP implementation.
+This repository is now in Phase 4: contributor infrastructure and initial Soroban testnet deployment on top of the Phase 3 core MVP.
 
 Implemented today:
 
@@ -19,16 +19,19 @@ Implemented today:
 - monorepo workspace, TypeScript, ESLint, and Turborepo foundation
 - brand guidance and shared design tokens
 - Phase 2 contributor, security, API, architecture, and roadmap documentation
+- Phase 4 onboarding, debugging, and contributor workflow documentation
+- `.github` contributor scaffolding for issue templates, PR reviews, labels, CODEOWNERS, and CI
 - shared types and SDK helpers for the MVP flow
 - TypeScript service modules for identity, proof generation, relay, audit logging, and indexing
-- Rust contract-core workspace for identity, policy, compliance, and asset transfer logic
+- Soroban-aligned Rust contract workspace for identity, policy, compliance, and asset transfer logic
+- testnet deployments for the current identity, policy, compliance, and asset contracts
 
 Still not implemented:
 
-- deployed Soroban contracts and on-chain integration
 - real zk circuits and proving backends
 - production wallet integrations and persistence
 - PostgreSQL-backed indexing and observability infrastructure
+- end-to-end production-grade on-chain integration beyond the current testnet reference deployments
 
 ## Core modules
 
@@ -107,6 +110,7 @@ npm run dev
 Useful commands:
 
 ```bash
+npm run docs:check
 npm run lint
 npm run typecheck
 npm run build
@@ -123,7 +127,9 @@ Primary demo route:
 - [Architecture docs](./docs/architecture/system-overview.md)
 - [Security docs](./docs/security/threat-model.md)
 - [API docs](./docs/api/rest-api.md)
+- [Contract deployments](./docs/contracts/deployments.md)
 - [Contributor docs](./docs/contributors/setup.md)
+- [Onboarding docs](./docs/onboarding/README.md)
 - [Roadmap docs](./docs/roadmap/roadmap.md)
 - [Diagrams](./docs/diagrams/system-architecture.md)
 
@@ -151,7 +157,7 @@ Repo policies:
 - Phase 1: branding, landing page, and repo foundation
 - Phase 2: documentation, architecture, and contributor readiness
 - Phase 3: zk compliance MVP and issuer workflow implementation
-- Phase 4: contributor infrastructure, SDK surface area, and public issues
+- Phase 4: contributor infrastructure, onboarding systems, CI maturity, and SDK shaping
 - Phase 5+: application preparation, ecosystem integration, and protocol expansion
 
 Detailed planning lives in:
@@ -168,6 +174,8 @@ Start here:
 
 - [CONTRIBUTING.md](./CONTRIBUTING.md)
 - [Contributor setup](./docs/contributors/setup.md)
+- [Contributor onboarding](./docs/onboarding/README.md)
+- [Contract deployments](./docs/contracts/deployments.md)
 - [Development workflow](./docs/contributors/development.md)
 - [Testing guide](./docs/contributors/testing.md)
 - [Coding standards](./docs/contributors/coding-standards.md)

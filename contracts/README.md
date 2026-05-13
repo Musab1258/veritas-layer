@@ -1,6 +1,6 @@
 # Contracts
 
-Phase 3 adds a Rust contract-core workspace that models the first MVP slice:
+The `contracts/` workspace now contains deployable Soroban contract artifacts for the first Veritas MVP slice:
 
 - `identity-registry`
 - `compliance-engine`
@@ -8,11 +8,20 @@ Phase 3 adds a Rust contract-core workspace that models the first MVP slice:
 - `asset-engine`
 - `shared`
 
-These crates are deterministic reference logic for the zk compliance MVP:
+These crates implement the current zk compliance MVP contract surface:
 
 - credential issuance and revocation
 - proof-backed eligibility validation
 - policy enforcement for KYC, accreditation, and jurisdiction gates
 - issuer-gated transfer execution
 
-The machine does not currently include the Soroban CLI, so this workspace is implemented as pure Rust contract-core logic and tests rather than deployed Soroban artifacts. The architecture and interfaces are aligned to the Soroban upgrade path documented in `docs/architecture/`.
+Current deployment record:
+
+- `docs/contracts/deployments.md`
+
+Technical status:
+
+- the contracts build to WASM with `stellar contract build --manifest-path contracts/Cargo.toml`
+- the current testnet aliases and contract IDs are documented in the deployment record
+- the asset engine has been deployed to testnet but is not initialized with a live asset definition yet
+- this remains a narrow MVP contract slice, not a full production tokenization protocol

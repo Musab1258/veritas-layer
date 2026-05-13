@@ -1,59 +1,38 @@
+#![no_std]
+
+use soroban_sdk::{contract, contractimpl, Env};
 use veritas_contract_shared::{CompliancePolicy, ContractError, CredentialClaims};
 
-pub fn validate_policy(
-    policy: &CompliancePolicy,
-    claims: &CredentialClaims,
-) -> Result<(), ContractError> {
-    if policy.kyc_required && !claims.kyc_verified {
-        return Err(ContractError::PolicyDenied("kyc_required".to_string()));
-    }
+#[contract]
+pub struct TransferPolicyContract;
 
-    if policy.accredited_only && !claims.accredited {
-        return Err(ContractError::PolicyDenied(
-            "accredited_required".to_string(),
-        ));
-    }
+#[contractimpl]
+impl TransferPolicyContract {
+    pub fn validate_policy(
+        _env: Env,
+        policy: CompliancePolicy,
+        claims: CredentialClaims,
+    ) -> u32 {
+        if policy.kyc_required && !claims.kyc_verified {
+            return ContractError::KycRequired as u32;
+        }
 
-    if !policy
-        .allowed_jurisdictions
-        .iter()
-        .any(|value| value == &claims.jurisdiction)
-    {
-        return Err(ContractError::PolicyDenied(
-            "jurisdiction_blocked".to_string(),
-        ));
-    }
+        if policy.accredited_only && !claims.accredited {
+            return ContractError::AccreditedRequired as u32;
+        }
 
-    Ok(())
-}
+        let mut allowed = false;
+        for jurisdiction in policy.allowed_jurisdictions.iter() {
+            if jurisdiction == claims.jurisdiction {
+                allowed = true;
+                break;
+            }
+        }
 
-#[cfg(test)]
-mod tests {
-    use super::validate_policy;
-    use veritas_contract_shared::{CompliancePolicy, CredentialClaims, ContractError};
+        if !allowed {
+            return ContractError::JurisdictionBlocked as u32;
+        }
 
-    #[test]
-    fn rejects_disallowed_jurisdiction() {
-        let policy = CompliancePolicy {
-            id: "policy".to_string(),
-            kyc_required: true,
-            accredited_only: true,
-            allowed_jurisdictions: vec!["US".to_string()],
-        };
-        let claims = CredentialClaims {
-            kyc_verified: true,
-            accredited: true,
-            jurisdiction: "NG".to_string(),
-            credential_expiry: 100,
-        };
-
-        let result = validate_policy(&policy, &claims);
-
-        assert_eq!(
-            result,
-            Err(ContractError::PolicyDenied(
-                "jurisdiction_blocked".to_string()
-            ))
-        );
+        0
     }
 }

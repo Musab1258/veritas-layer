@@ -1,13 +1,17 @@
 [package]
 name = "veritas-asset-engine"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+publish = false
 
 [lib]
 name = "veritas_asset_engine"
 path = "src/lib.rs"
+crate-type = ["lib", "cdylib"]
+doctest = false
 
 [dependencies]
+soroban-sdk = { workspace = true }
 veritas-contract-shared = { path = "../shared" }
 veritas-identity-registry = { path = "../identity-registry" }
 veritas-compliance-engine = { path = "../compliance-engine" }

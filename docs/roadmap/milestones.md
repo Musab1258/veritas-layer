@@ -30,19 +30,20 @@ Deliverables:
 - transfer validation path
 - issuer-controlled policy configuration
 
-## Milestone 4: Integrator surface
+## Milestone 4: Contributor operating system
 
-Target phase: Phase 4
+Status: implemented in-repo during Phase 4
 
 Deliverables:
 
-- SDK foundation
-- example clients
-- public API documentation backed by implementation
+- onboarding, debugging, and workflow documentation
+- issue templates, labels blueprint, PR template, and CODEOWNERS scaffolding
+- curated issue backlog for manual GitHub publication
+- contributor-oriented SDK documentation
 
 ## Milestone 5: Operational maturity
 
-Target phase: Phase 4 and later
+Status: in progress across Phase 4 and later
 
 Deliverables:
 

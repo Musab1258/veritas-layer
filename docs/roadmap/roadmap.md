@@ -50,10 +50,10 @@ Contributor infrastructure.
 
 Priority scope:
 
-- public issues and milestones
-- SDK shaping
-- CI maturity
-- contributor-ready examples
+- contributor onboarding and debugging docs
+- issue templates, labels, and PR review scaffolding
+- CI maturity and documentation validation
+- SDK shaping and contributor-ready issue seeds
 
 ## Phase 5 and beyond
 

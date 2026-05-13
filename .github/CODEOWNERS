@@ -1,0 +1,9 @@
+# Replace placeholder owners after GitHub org teams are created.
+
+* @veritas-layer/core-maintainers
+
+/apps/ @veritas-layer/frontend
+/contracts/ @veritas-layer/contracts
+/docs/ @veritas-layer/docs
+/packages/sdk/ @veritas-layer/sdk
+/services/ @veritas-layer/backend
